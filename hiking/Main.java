@@ -111,13 +111,32 @@ public class Main {
 			for (int x = 0; x < field[y].length; x++) {
 				idString = Integer.toString(x * field.length + y);
 				if (route.contains(idString)) {
-					System.out.printf("%-2s", "X");
+					System.out.printf("%-3s", "X");
 				} else {
-					System.out.printf("%-2s", hikingGraph.getNode(idString).getTerrain().getCode());
+					System.out.printf("%-3s", hikingGraph.getNode(idString).getTerrain().getCost());
 				}
 			}
 			System.out.println("");
 		}
+	}
+
+	public int computeRouteCost(List<Square> route) {
+		int cost = 0;
+		for (int i = 0; i < route.size(); i++) {
+			cost += route.get(i).getTerrain().getCost();
+		}
+		return cost;
+	}
+
+	public int computeTimeUnits(List<Square> route) {
+		int timeUnits = 0;
+		for (int i = 0; i < route.size(); i++) {
+			if (route.get(i).getTerrain().getCode() == 5)
+				timeUnits += 3;
+			if (route.get(i).getTerrain().getCode() == 1)
+				timeUnits += 4;
+		}
+		return timeUnits;
 	}
 
 	public static void main(String[] args) {
@@ -135,5 +154,7 @@ public class Main {
 		List<String> routeCompact = route.stream().map(Square::getId).collect(Collectors.toList());
 		System.out.println(routeCompact);
 		main.printGraph(routeCompact);
+		System.out.println("Route cost: " + main.computeRouteCost(route));
+		System.out.println("Time Units: " + main.computeTimeUnits(route));
 	}
 }
