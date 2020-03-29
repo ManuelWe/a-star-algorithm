@@ -20,7 +20,6 @@ public class Graph<T extends GraphNode> {
 	}
 
 	public Set<T> getConnections(T node) {
-		System.out.println(node.getId());
 		return connections.get(node.getId()).stream().map(this::getNode).collect(Collectors.toSet());
 	}
 }
