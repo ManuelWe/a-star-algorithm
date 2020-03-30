@@ -10,11 +10,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import a_star.Graph;
 import a_star.RouteFinder;
+import a_star.RouteNode;
 
 public class Main {
 	private Graph<Square> hikingGraph;
@@ -100,10 +102,10 @@ public class Main {
 		}
 
 		hikingGraph = new Graph<>(squares, connections);
-		routeFinder = new RouteFinder<>(hikingGraph, new Heuristic(), new Heuristic());
+		routeFinder = new RouteFinder<>(hikingGraph, new HikingCost(), new Heuristic());
 	}
 
-	public void printGraph(List<String> route) {
+	public void printGraph(List<String> route, List<String> openSet) {
 		String idString = null;
 
 		System.out.println("");
@@ -111,9 +113,11 @@ public class Main {
 			for (int x = 0; x < field[y].length; x++) {
 				idString = Integer.toString(x * field.length + y);
 				if (route.contains(idString)) {
-					System.out.printf("%-3s", "X");
+					System.out.printf("%-4s", "X");
+				} else if (openSet.contains(idString)) {
+					System.out.printf("%-4s", "O");
 				} else {
-					System.out.printf("%-3s", hikingGraph.getNode(idString).getTerrain().getCost());
+					System.out.printf("%-4s", hikingGraph.getNode(idString).getId());
 				}
 			}
 			System.out.println("");
@@ -150,11 +154,18 @@ public class Main {
 
 		List<Square> route = main.routeFinder.findRoute(main.hikingGraph.getNode("44"),
 				main.hikingGraph.getNode("136"));
-
 		List<String> routeCompact = route.stream().map(Square::getId).collect(Collectors.toList());
+
+		List<String> openSetIds = new ArrayList<>();
+		Queue<RouteNode> openSet = main.routeFinder.getOpenSet();
+		while (!openSet.isEmpty()) {
+			openSetIds.add(openSet.poll().getCurrent().getId());
+		}
+
 		System.out.println(routeCompact);
-		main.printGraph(routeCompact);
+		main.printGraph(routeCompact, openSetIds);
 		System.out.println("Route cost: " + main.computeRouteCost(route));
 		System.out.println("Time Units: " + main.computeTimeUnits(route));
+		System.out.println("Examined Nodes: " + main.routeFinder.nodesChecked);
 	}
 }
