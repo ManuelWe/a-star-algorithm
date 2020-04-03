@@ -22,4 +22,15 @@ public class Terrain {
 	public int getCost() {
 		return cost;
 	}
+
+	public double computeExhaustionPoints(double exhaustion) {
+		if (code == 5) // Felswand
+			return exhaustion + 3;
+		else if (code == 1) // Fluss
+			return exhaustion + 4;
+		else if (code == 3) { // Wald
+			return exhaustion / 2;
+		} else
+			return exhaustion;
+	}
 }

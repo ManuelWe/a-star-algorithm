@@ -6,12 +6,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
-import java.util.stream.Collectors;
 
 public class RouteFinder<T extends GraphNode> {
 	private final Graph<T> graph;
 	private final Scorer<T> nextNodeScorer;
 	private final Scorer<T> targetScorer;
+	private Queue<RouteNode> openSet = new PriorityQueue<>(); // TODO move into findRoute
+	public int nodesChecked = 0; // TODO removed
+	private double currentExhaustionPoints = 0;
+	private HeuristicResult heuristicResult = new HeuristicResult();
 
 	public RouteFinder(Graph<T> graph, Scorer<T> nextNodeScorer, Scorer<T> targetScorer) {
 		this.graph = graph;
@@ -21,17 +24,19 @@ public class RouteFinder<T extends GraphNode> {
 
 	public List<T> findRoute(T from, T to) {
 		Map<T, RouteNode<T>> allNodes = new HashMap<>();
-		Queue<RouteNode> openSet = new PriorityQueue<>();
-
-		RouteNode<T> start = new RouteNode<>(from, null, 0d, targetScorer.computeCost(from, to));
+		heuristicResult = targetScorer.computeCost(from, to, currentExhaustionPoints);
+		currentExhaustionPoints = heuristicResult.getExhaustionPoints();
+		RouteNode<T> start = new RouteNode<>(from, null, 0d, heuristicResult.getHeuristic());
 		allNodes.put(from, start);
 		openSet.add(start);
 
 		while (!openSet.isEmpty()) {
-			System.out.println(
-					"Open Set contains: " + openSet.stream().map(RouteNode::getCurrent).collect(Collectors.toSet()));
+			nodesChecked++;
+			// System.out.println(
+			// "Open Set contains: " +
+			// openSet.stream().map(RouteNode::getCurrent).collect(Collectors.toSet()));
 			RouteNode<T> next = openSet.poll();
-			System.out.println("Looking at node: " + next);
+			// System.out.println("Looking at node: " + next);
 			if (next.getCurrent().equals(to)) {
 				System.out.println("Found our destination!");
 
@@ -47,21 +52,29 @@ public class RouteFinder<T extends GraphNode> {
 			}
 
 			graph.getConnections(next.getCurrent()).forEach(connection -> {
-				double newScore = next.getRouteScore() + nextNodeScorer.computeCost(next.getCurrent(), connection);
+				heuristicResult = nextNodeScorer.computeCost(next.getCurrent(), connection, currentExhaustionPoints);
+				currentExhaustionPoints = heuristicResult.getExhaustionPoints();
+				double newScore = next.getRouteScore() + heuristicResult.getHeuristic();
 				RouteNode<T> nextNode = allNodes.getOrDefault(connection, new RouteNode<>(connection));
 				allNodes.put(connection, nextNode);
 
 				if (nextNode.getRouteScore() > newScore) {
 					nextNode.setPrevious(next.getCurrent());
 					nextNode.setRouteScore(newScore);
-					nextNode.setEstimatedScore(newScore + targetScorer.computeCost(connection, to));
+					heuristicResult = targetScorer.computeCost(connection, to, currentExhaustionPoints);
+					currentExhaustionPoints = heuristicResult.getExhaustionPoints();
+					nextNode.setEstimatedScore(newScore + heuristicResult.getHeuristic());
 					openSet.add(nextNode);
-					System.out.println("Found a better route to node: " + nextNode);
+					// System.out.println("Found a better route to node: " + nextNode);
 				}
 			});
 		}
 
 		throw new IllegalStateException("No route found");
+	}
+
+	public Queue<RouteNode> getOpenSet() { // TODO: remove
+		return openSet;
 	}
 
 }

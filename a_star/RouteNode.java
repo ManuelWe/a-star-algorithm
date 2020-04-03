@@ -2,7 +2,7 @@ package a_star;
 
 import java.util.StringJoiner;
 
-class RouteNode<T extends GraphNode> implements Comparable<RouteNode> {
+public class RouteNode<T extends GraphNode> implements Comparable<RouteNode> { // TODO remove public
 	private final T current;
 	private T previous;
 	private double routeScore;
@@ -19,7 +19,7 @@ class RouteNode<T extends GraphNode> implements Comparable<RouteNode> {
 		this.estimatedScore = estimatedScore;
 	}
 
-	T getCurrent() {
+	public T getCurrent() { // TODO remove public
 		return current;
 	}
 

@@ -36,7 +36,6 @@ public class Square implements GraphNode {
 
 	@Override
 	public String toString() {
-		return new StringJoiner(", ", Square.class.getSimpleName() + "[", "]").add("id='" + id + "'")
-				.add("posX=" + positionX).add("posY=" + positionY).toString();
+		return new StringJoiner(", ", "[", "]").add("id='" + id + "'").toString();
 	}
 }

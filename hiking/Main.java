@@ -23,6 +23,7 @@ public class Main {
 	private RouteFinder<Square> routeFinder;
 	private ArrayList<Terrain> terrains = new ArrayList<Terrain>();
 	private String[][] field;
+	private HikingCost hikingCost = new HikingCost();
 
 	public void parseCSV(int fieldHeight, int fieldWidth) {
 		String pathToCSV = "./S_001_Daten.csv";
@@ -102,7 +103,7 @@ public class Main {
 		}
 
 		hikingGraph = new Graph<>(squares, connections);
-		routeFinder = new RouteFinder<>(hikingGraph, new HikingCost(), new Heuristic());
+		routeFinder = new RouteFinder<>(hikingGraph, hikingCost, new Heuristic());
 	}
 
 	public void printGraph(List<String> route, List<String> openSet) {
@@ -117,7 +118,7 @@ public class Main {
 				} else if (openSet.contains(idString)) {
 					System.out.printf("%-4s", "O");
 				} else {
-					System.out.printf("%-4s", hikingGraph.getNode(idString).getId());
+					System.out.printf("%-4s", hikingGraph.getNode(idString).getTerrain().getCode());
 				}
 			}
 			System.out.println("");
@@ -167,5 +168,6 @@ public class Main {
 		System.out.println("Route cost: " + main.computeRouteCost(route));
 		System.out.println("Time Units: " + main.computeTimeUnits(route));
 		System.out.println("Examined Nodes: " + main.routeFinder.nodesChecked);
+		System.out.println("Breaks taken: " + main.hikingCost.getBreaks());
 	}
 }
