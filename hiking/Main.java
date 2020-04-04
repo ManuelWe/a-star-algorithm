@@ -24,15 +24,41 @@ public class Main {
 	private ArrayList<Terrain> terrains = new ArrayList<Terrain>();
 	private String[][] field;
 	private HikingCost hikingCost = new HikingCost();
+	private int startNodeId;
+	private int endNodeId;
 
-	public void parseCSV(int fieldHeight, int fieldWidth) {
+	public void parseCSV() {
 		String pathToCSV = "./S_001_Daten.csv";
 		File csvFile = new File(pathToCSV);
 
 		if (csvFile.isFile()) {
 			BufferedReader csvReader = null;
-			field = new String[fieldWidth][fieldHeight];
+			int fieldWidth = 0;
+			int fieldHeight = 0;
 
+			try {
+				csvReader = new BufferedReader(new FileReader(pathToCSV));
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+
+			try {
+				fieldWidth = csvReader.readLine().split(";").length;
+				fieldHeight++;
+				while (csvReader.readLine().split(";").length != 0) {
+					fieldHeight++;
+				}
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+
+			try {
+				csvReader.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			field = new String[fieldWidth][fieldHeight];
 			try {
 				csvReader = new BufferedReader(new FileReader(pathToCSV));
 			} catch (FileNotFoundException e1) {
@@ -55,6 +81,22 @@ public class Main {
 						Terrain terrain = new Terrain(Integer.parseInt(data[0]), data[1], Integer.parseInt(data[2]));
 						terrains.add(terrain);
 					}
+					if (terrains.size() == 1) { // row with startNode coordinates
+						if (data.length > 4) { // check, if coordinates are provided
+							startNodeId = Integer.parseInt(data[4]) * fieldHeight + Integer.parseInt(data[5]);
+						} else {
+							// if no coordinates use default from requirements
+							startNodeId = 44;
+						}
+					}
+					if (terrains.size() == 2) { // row with endNode coordinates
+						if (data.length > 4) { // check, if coordinates are provided
+							endNodeId = Integer.parseInt(data[4]) * fieldHeight + Integer.parseInt(data[5]);
+						} else {
+							// if no coordinates use default from requirements
+							endNodeId = 136;
+						}
+					}
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -66,9 +108,17 @@ public class Main {
 				e.printStackTrace();
 			}
 		} else {
-			System.out.println("File \"S_001_Daten.csv\" can not be found. Please add it to the projects root dir.");
+			System.out.println("File \"" + pathToCSV + "\" can not be found. Please add it to the projects root dir.");
 			System.exit(0);
 		}
+	}
+
+	public String getStartNodeId() {
+		return Integer.toString(startNodeId);
+	}
+
+	public String getEndNodeId() {
+		return Integer.toString(endNodeId);
 	}
 
 	public void setUp() throws Exception {
@@ -110,9 +160,9 @@ public class Main {
 		String idString = null;
 
 		System.out.println("");
-		for (int y = 0; y < field.length; y++) {
-			for (int x = 0; x < field[y].length; x++) {
-				idString = Integer.toString(x * field.length + y);
+		for (int y = 0; y < field[0].length; y++) {
+			for (int x = 0; x < field.length; x++) {
+				idString = Integer.toString(x * field[0].length + y);
 				if (route.contains(idString)) {
 					System.out.printf("%-4s", "X");
 				} else if (openSet.contains(idString)) {
@@ -146,15 +196,15 @@ public class Main {
 
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.parseCSV(15, 15);
+		main.parseCSV();
 		try {
 			main.setUp();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		List<Square> route = main.routeFinder.findRoute(main.hikingGraph.getNode("44"),
-				main.hikingGraph.getNode("136"));
+		List<Square> route = main.routeFinder.findRoute(main.hikingGraph.getNode(main.getStartNodeId()),
+				main.hikingGraph.getNode(main.getEndNodeId()));
 		List<String> routeCompact = route.stream().map(Square::getId).collect(Collectors.toList());
 
 		List<String> openSetIds = new ArrayList<>();
