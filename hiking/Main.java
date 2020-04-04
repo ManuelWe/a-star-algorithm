@@ -28,7 +28,7 @@ public class Main {
 	private int endNodeId;
 
 	public void parseCSV() {
-		String pathToCSV = "./S_001_Daten.csv";
+		String pathToCSV = "./WaldVsFels.csv";
 		File csvFile = new File(pathToCSV);
 
 		if (csvFile.isFile()) {
@@ -177,7 +177,7 @@ public class Main {
 
 	public int computeRouteCost(List<Square> route) {
 		int cost = 0;
-		for (int i = 0; i < route.size(); i++) {
+		for (int i = 0; i < route.size() - 1; i++) {
 			cost += route.get(i).getTerrain().getCost();
 		}
 		return cost;
@@ -216,7 +216,7 @@ public class Main {
 		System.out.println(routeCompact);
 		main.printGraph(routeCompact, openSetIds);
 		System.out.println("Route cost: " + main.computeRouteCost(route));
-		System.out.println("Time Units: " + main.computeTimeUnits(route));
+		System.out.println("Exhaustion Points: " + main.computeTimeUnits(route));
 		System.out.println("Examined Nodes: " + main.routeFinder.nodesChecked);
 		System.out.println("Breaks taken: " + main.hikingCost.getBreaks());
 	}
