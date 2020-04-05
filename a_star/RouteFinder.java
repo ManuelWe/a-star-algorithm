@@ -27,6 +27,7 @@ public class RouteFinder<T extends GraphNode> {
 		heuristicResult = targetScorer.computeCost(from, to, currentExhaustionPoints);
 		currentExhaustionPoints = heuristicResult.getExhaustionPoints();
 		RouteNode<T> start = new RouteNode<>(from, null, 0d, heuristicResult.getHeuristic());
+		start.setExhaustionPoints(currentExhaustionPoints);
 		allNodes.put(from, start);
 		openSet.add(start);
 
@@ -42,17 +43,27 @@ public class RouteFinder<T extends GraphNode> {
 
 				List<T> route = new ArrayList<>();
 				RouteNode<T> current = next;
+				List<String> exhP = new ArrayList<>(); // TODO remove
+				int breaks = 0;
 				do {
 					route.add(0, current.getCurrent());
+					if (current.getBreaks() == 1) {
+						exhP.add(0, "B" + current.getExhaustionPoints());
+					} else {
+						exhP.add(0, current.getExhaustionPoints() + "");
+					}
+					breaks += current.getBreaks();
 					current = allNodes.get(current.getPrevious());
 				} while (current != null);
 
 				System.out.println("Route: " + route);
+				System.out.println("Breaks: " + breaks);
+				System.out.println("Exhaustion Points: " + exhP);
 				return route;
 			}
 
 			graph.getConnections(next.getCurrent()).forEach(connection -> {
-				heuristicResult = nextNodeScorer.computeCost(next.getCurrent(), connection, currentExhaustionPoints);
+				heuristicResult = nextNodeScorer.computeCost(next.getCurrent(), connection, next.getExhaustionPoints());
 				currentExhaustionPoints = heuristicResult.getExhaustionPoints();
 				double newScore = next.getRouteScore() + heuristicResult.getHeuristic();
 				RouteNode<T> nextNode = allNodes.getOrDefault(connection, new RouteNode<>(connection));
@@ -61,8 +72,10 @@ public class RouteFinder<T extends GraphNode> {
 				if (nextNode.getRouteScore() > newScore) {
 					nextNode.setPrevious(next.getCurrent());
 					nextNode.setRouteScore(newScore);
-					heuristicResult = targetScorer.computeCost(connection, to, currentExhaustionPoints);
+					heuristicResult = targetScorer.computeCost(connection, to,
+							allNodes.get(next.getCurrent()).getExhaustionPoints());
 					currentExhaustionPoints = heuristicResult.getExhaustionPoints();
+					nextNode.setExhaustionPoints(currentExhaustionPoints);
 					nextNode.setEstimatedScore(newScore + heuristicResult.getHeuristic());
 					openSet.add(nextNode);
 					// System.out.println("Found a better route to node: " + nextNode);

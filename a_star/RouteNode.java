@@ -7,6 +7,8 @@ public class RouteNode<T extends GraphNode> implements Comparable<RouteNode> { /
 	private T previous;
 	private double routeScore;
 	private double estimatedScore;
+	private double exhaustionPoints = 0; // exhaustionPoints up to this node
+	private int breaks = 0; // up to this node
 
 	RouteNode(T current) {
 		this(current, null, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
@@ -35,6 +37,14 @@ public class RouteNode<T extends GraphNode> implements Comparable<RouteNode> { /
 		return estimatedScore;
 	}
 
+	double getExhaustionPoints() {
+		return exhaustionPoints;
+	}
+
+	int getBreaks() {
+		return breaks;
+	}
+
 	void setPrevious(T previous) {
 		this.previous = previous;
 	}
@@ -45,6 +55,14 @@ public class RouteNode<T extends GraphNode> implements Comparable<RouteNode> { /
 
 	void setEstimatedScore(double estimatedScore) {
 		this.estimatedScore = estimatedScore;
+	}
+
+	void setExhaustionPoints(double exhaustionPoints) {
+		if (exhaustionPoints >= 10) {
+			exhaustionPoints -= 10;
+			breaks++;
+		}
+		this.exhaustionPoints = exhaustionPoints;
 	}
 
 	@Override

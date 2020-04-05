@@ -28,7 +28,7 @@ public class Main {
 	private int endNodeId;
 
 	public void parseCSV() {
-		String pathToCSV = "./WaldVsFels.csv";
+		String pathToCSV = "./S_001_DatenTest.csv";
 		File csvFile = new File(pathToCSV);
 
 		if (csvFile.isFile()) {
