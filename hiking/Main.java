@@ -28,7 +28,7 @@ public class Main {
 	private int endNodeId;
 
 	public void parseCSV() {
-		String pathToCSV = "./S_001_DatenTest.csv";
+		String pathToCSV = "./S_001_Daten.csv";
 		File csvFile = new File(pathToCSV);
 
 		if (csvFile.isFile()) {
@@ -85,16 +85,16 @@ public class Main {
 						if (data.length > 4) { // check, if coordinates are provided
 							startNodeId = Integer.parseInt(data[4]) * fieldHeight + Integer.parseInt(data[5]);
 						} else {
-							// if no coordinates use default from requirements
-							startNodeId = 44;
+							// if no coordinates, use default from requirements (X=2,Y=14)
+							startNodeId = 2 * fieldHeight + 14;
 						}
 					}
 					if (terrains.size() == 2) { // row with endNode coordinates
 						if (data.length > 4) { // check, if coordinates are provided
 							endNodeId = Integer.parseInt(data[4]) * fieldHeight + Integer.parseInt(data[5]);
 						} else {
-							// if no coordinates use default from requirements
-							endNodeId = 136;
+							// if no coordinates, use default from requirements (X=9,Y=1)
+							endNodeId = 9 * fieldHeight + 1;
 						}
 					}
 				}
