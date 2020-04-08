@@ -33,11 +33,10 @@ public class RouteFinder<T extends GraphNode> {
 
 		while (!openSet.isEmpty()) {
 			nodesChecked++;
-			// System.out.println(
-			// "Open Set contains: " +
-			// openSet.stream().map(RouteNode::getCurrent).collect(Collectors.toSet()));
+//			System.out.println(
+//					"Open Set contains: " + openSet.stream().map(RouteNode::getCurrent).collect(Collectors.toSet()));
 			RouteNode<T> next = openSet.poll();
-			// System.out.println("Looking at node: " + next);
+//			System.out.println("Looking at node: " + next);
 			if (next.getCurrent().equals(to)) {
 				System.out.println("Found our destination!");
 
@@ -47,12 +46,8 @@ public class RouteFinder<T extends GraphNode> {
 				int breaks = 0;
 				do {
 					route.add(0, current.getCurrent());
-					if (current.getBreaks() == 1) {
-						exhP.add(0, "B" + current.getExhaustionPoints());
-					} else {
-						exhP.add(0, current.getExhaustionPoints() + "");
-					}
-					breaks += current.getBreaks();
+					exhP.add(0, current.getExhaustionPoints() + "");
+					breaks += (int) current.getExhaustionPoints() / 10;
 					current = allNodes.get(current.getPrevious());
 				} while (current != null);
 

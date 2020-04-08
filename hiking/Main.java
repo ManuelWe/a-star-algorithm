@@ -28,7 +28,7 @@ public class Main {
 	private int endNodeId;
 
 	public void parseCSV() {
-		String pathToCSV = "./S_001_DatenTest.csv";
+		String pathToCSV = "./WaldRealErholung.csv";
 		File csvFile = new File(pathToCSV);
 
 		if (csvFile.isFile()) {
@@ -218,6 +218,5 @@ public class Main {
 		System.out.println("Route cost: " + main.computeRouteCost(route));
 		System.out.println("Exhaustion Points: " + main.computeTimeUnits(route));
 		System.out.println("Examined Nodes: " + main.routeFinder.nodesChecked);
-		System.out.println("Breaks taken: " + main.hikingCost.getBreaks());
 	}
 }
