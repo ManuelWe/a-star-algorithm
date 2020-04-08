@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.stream.Collectors;
 
 public class RouteFinder<T extends GraphNode> {
 	private final Graph<T> graph;
@@ -33,10 +34,10 @@ public class RouteFinder<T extends GraphNode> {
 
 		while (!openSet.isEmpty()) {
 			nodesChecked++;
-//			System.out.println(
-//					"Open Set contains: " + openSet.stream().map(RouteNode::getCurrent).collect(Collectors.toSet()));
+			System.out.println(
+					"Open Set contains: " + openSet.stream().map(RouteNode::getCurrent).collect(Collectors.toSet()));
 			RouteNode<T> next = openSet.poll();
-//			System.out.println("Looking at node: " + next);
+			System.out.println("Looking at node: " + next);
 			if (next.getCurrent().equals(to)) {
 				System.out.println("Found our destination!");
 
@@ -47,7 +48,8 @@ public class RouteFinder<T extends GraphNode> {
 				do {
 					route.add(0, current.getCurrent());
 					exhP.add(0, current.getExhaustionPoints() + "");
-					breaks += (int) current.getExhaustionPoints() / 10;
+					if (current.getBreak())
+						breaks++;
 					current = allNodes.get(current.getPrevious());
 				} while (current != null);
 
@@ -58,8 +60,11 @@ public class RouteFinder<T extends GraphNode> {
 			}
 
 			graph.getConnections(next.getCurrent()).forEach(connection -> {
+				if (next.getExhaustionPoints() >= 10) { // exhaustion will be resetted in nextNodeScorer
+					next.setBreak(true);
+				}
 				heuristicResult = nextNodeScorer.computeCost(next.getCurrent(), connection, next.getExhaustionPoints());
-				// currentExhaustionPoints = heuristicResult.getExhaustionPoints();
+				next.setExhaustionPoints(heuristicResult.getExhaustionPoints()); // set updated exhaustion after break
 				double newScore = next.getRouteScore() + heuristicResult.getHeuristic();
 				RouteNode<T> nextNode = allNodes.getOrDefault(connection, new RouteNode<>(connection));
 				allNodes.put(connection, nextNode);
@@ -73,7 +78,7 @@ public class RouteFinder<T extends GraphNode> {
 					nextNode.setExhaustionPoints(currentExhaustionPoints);
 					nextNode.setEstimatedScore(newScore + heuristicResult.getHeuristic());
 					openSet.add(nextNode);
-					// System.out.println("Found a better route to node: " + nextNode);
+					System.out.println("Found a better route to node: " + nextNode);
 				}
 			});
 		}
@@ -84,5 +89,4 @@ public class RouteFinder<T extends GraphNode> {
 	public Queue<RouteNode> getOpenSet() { // TODO: remove
 		return openSet;
 	}
-
 }
