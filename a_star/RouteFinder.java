@@ -64,7 +64,7 @@ public class RouteFinder<T extends GraphNode> {
 
 			graph.getConnections(next.getCurrent()).forEach(connection -> {
 				heuristicResult = nextNodeScorer.computeCost(next.getCurrent(), connection, next.getExhaustionPoints());
-				currentExhaustionPoints = heuristicResult.getExhaustionPoints();
+				// currentExhaustionPoints = heuristicResult.getExhaustionPoints();
 				double newScore = next.getRouteScore() + heuristicResult.getHeuristic();
 				RouteNode<T> nextNode = allNodes.getOrDefault(connection, new RouteNode<>(connection));
 				allNodes.put(connection, nextNode);

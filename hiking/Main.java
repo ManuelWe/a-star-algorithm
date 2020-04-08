@@ -28,7 +28,7 @@ public class Main {
 	private int endNodeId;
 
 	public void parseCSV() {
-		String pathToCSV = "./S_001_Daten.csv";
+		String pathToCSV = "./S_001_DatenTest.csv";
 		File csvFile = new File(pathToCSV);
 
 		if (csvFile.isFile()) {
@@ -153,7 +153,7 @@ public class Main {
 		}
 
 		hikingGraph = new Graph<>(squares, connections);
-		routeFinder = new RouteFinder<>(hikingGraph, hikingCost, new Heuristic());
+		routeFinder = new RouteFinder<>(hikingGraph, hikingCost, new Heuristic(terrains));
 	}
 
 	public void printGraph(List<String> route, List<String> openSet) {
