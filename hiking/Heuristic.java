@@ -2,15 +2,18 @@ package hiking;
 
 import java.util.ArrayList;
 
-import a_star.HeuristicResult;
 import a_star.Scorer;
+import a_star.ScorerResult;
 
+// implementation of Scorer interface to calculate estimated cost to destination 
 public class Heuristic implements Scorer<Square> {
-	private HeuristicResult result = new HeuristicResult();
+	private ScorerResult result = new ScorerResult();
 	private double multiplicator;
 
 	public Heuristic(ArrayList<Terrain> terrains) {
 		int lowestTerrainCost = Integer.MAX_VALUE;
+
+		// find lowest terrain cost
 		for (int i = 0; i < terrains.size(); i++) {
 			if (lowestTerrainCost > terrains.get(i).getCost()) {
 				lowestTerrainCost = terrains.get(i).getCost();
@@ -30,20 +33,20 @@ public class Heuristic implements Scorer<Square> {
 	}
 
 	@Override
-	public HeuristicResult computeCost(Square from, Square to, double currentExhaustionPoints) {
+	public ScorerResult computeCost(Square from, Square to, double currentExhaustionPoints) {
 		if (from.getTerrain().getCode() == 3) { // Wald
-			result.setHeuristic(Math.hypot(from.getX() - to.getX(), from.getY() - to.getY()) * multiplicator
-					- currentExhaustionPoints / 4.0);
-			result.setExhaustionPoints(currentExhaustionPoints / 2.0);
+			result.setCost(Math.hypot(from.getX() - to.getX(), from.getY() - to.getY())); // * multiplicator
+			// - currentExhaustionPoints / 4.0);
+			// result.setExhaustionPoints(currentExhaustionPoints / 2.0);
 		} else if (from.getTerrain().getCode() == 5) { // Felswand
-			result.setHeuristic(Math.hypot(from.getX() - to.getX(), from.getY() - to.getY()) * multiplicator + 1.5);
-			result.setExhaustionPoints(currentExhaustionPoints + 3);
+			result.setCost(Math.hypot(from.getX() - to.getX(), from.getY() - to.getY()));// * multiplicator + 1.5);
+			// result.setExhaustionPoints(currentExhaustionPoints + 3);
 		} else if (from.getTerrain().getCode() == 1) { // Fluss
-			result.setHeuristic(Math.hypot(from.getX() - to.getX(), from.getY() - to.getY()) * multiplicator + 2);
-			result.setExhaustionPoints(currentExhaustionPoints + 4);
+			result.setCost(Math.hypot(from.getX() - to.getX(), from.getY() - to.getY()));// * multiplicator + 2);
+			// result.setExhaustionPoints(currentExhaustionPoints + 4);
 		} else {
-			result.setHeuristic(Math.hypot(from.getX() - to.getX(), from.getY() - to.getY()) * multiplicator);
-			result.setExhaustionPoints(currentExhaustionPoints);
+			result.setCost(Math.hypot(from.getX() - to.getX(), from.getY() - to.getY()));// * multiplicator);
+			// result.setExhaustionPoints(currentExhaustionPoints);
 		}
 
 		return result;

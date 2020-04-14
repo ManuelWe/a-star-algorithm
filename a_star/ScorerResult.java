@@ -1,14 +1,15 @@
 package a_star;
 
-public class HeuristicResult {
+// Class used to return cost and exhaustion points from scorer implementations
+public class ScorerResult {
 	private double heuristic = 0;
 	private double exhaustionPoints = 0;
 
-	public double getHeuristic() {
+	public double getCost() {
 		return heuristic;
 	}
 
-	public void setHeuristic(double heuristic) {
+	public void setCost(double heuristic) {
 		this.heuristic = heuristic;
 	}
 

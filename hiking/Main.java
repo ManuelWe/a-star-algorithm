@@ -28,7 +28,7 @@ public class Main {
 	private int endNodeId;
 
 	public void parseCSV() {
-		String pathToCSV = "./S_001_Daten.csv";
+		String pathToCSV = "./VerfrühtesAbbiegenaufWaldForce1.csv";
 		File csvFile = new File(pathToCSV);
 
 		if (csvFile.isFile()) {
@@ -158,18 +158,29 @@ public class Main {
 
 	public void printGraph(List<String> route, List<String> openSet) {
 		String idString = null;
+		char ch = 'A';
 
 		System.out.println("");
-		for (int y = 0; y < field[0].length; y++) {
+		for (int y = 0; y < field[0].length + 1; y++) {
+			if (y == 0) {
+				System.out.printf("%-4s", "");
+			} else {
+				System.out.printf("%-4s", y);
+			}
 			for (int x = 0; x < field.length; x++) {
-				idString = Integer.toString(x * field[0].length + y);
-				if (route.contains(idString)) {
-					System.out.printf("%-4s", "X");
-				} else if (openSet.contains(idString)) {
-					System.out.printf("%-4s", "O");
+				idString = Integer.toString(x * field[0].length + y - 1);
+				if (y == 0) {
+					System.out.printf("%-4s", ch);
 				} else {
-					System.out.printf("%-4s", hikingGraph.getNode(idString).getTerrain().getCode());
+					if (route.contains(idString)) {
+						System.out.printf("%-4s", "X");
+//					} else if (openSet.contains(idString)) {
+//						System.out.printf("%-4s", "O");
+					} else {
+						System.out.printf("%-4s", hikingGraph.getNode(idString).getTerrain().getCode());
+					}
 				}
+				ch++;
 			}
 			System.out.println("");
 		}
@@ -215,7 +226,7 @@ public class Main {
 
 		System.out.println(routeCompact);
 		main.printGraph(routeCompact, openSetIds);
-		System.out.println("Route cost: " + main.computeRouteCost(route));
+		System.out.println("Route cost (without breaks): " + main.computeRouteCost(route));
 		System.out.println("Exhaustion Points: " + main.computeTimeUnits(route));
 		System.out.println("Examined Nodes: " + main.routeFinder.nodesChecked);
 	}

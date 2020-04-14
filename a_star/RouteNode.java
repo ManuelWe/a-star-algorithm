@@ -2,13 +2,14 @@ package a_star;
 
 import java.util.StringJoiner;
 
+// Object to save node information during search
 public class RouteNode<T extends GraphNode> implements Comparable<RouteNode> { // TODO remove public
 	private final T current;
 	private T previous;
 	private double routeScore;
 	private double estimatedScore;
 	private double exhaustionPoints = 0; // exhaustionPoints up to this node
-	private boolean exhaustionBreak = false;
+	private boolean exhaustionBreak = false; // true if a break was taken on this route node
 
 	RouteNode(T current) {
 		this(current, null, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
@@ -41,7 +42,7 @@ public class RouteNode<T extends GraphNode> implements Comparable<RouteNode> { /
 		return exhaustionPoints;
 	}
 
-	boolean getBreak() {
+	boolean hasBreak() {
 		return exhaustionBreak;
 	}
 
@@ -80,6 +81,6 @@ public class RouteNode<T extends GraphNode> implements Comparable<RouteNode> { /
 	public String toString() {
 		return new StringJoiner(", ", RouteNode.class.getSimpleName() + "[", "]").add("current=" + current)
 				.add("previous=" + previous).add("routeScore=" + routeScore).add("estimatedScore=" + estimatedScore)
-				.add("exhaustion=" + exhaustionPoints).toString();
+				.toString();
 	}
 }

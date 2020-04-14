@@ -1,5 +1,6 @@
 package a_star;
 
+// interface to be implemented to calculate distance to next node and distance to goal
 public interface Scorer<T extends GraphNode> {
-	HeuristicResult computeCost(T from, T to, double currentExhaustionPoints);
+	ScorerResult computeCost(T from, T to, double currentExhaustionPoints);
 }
