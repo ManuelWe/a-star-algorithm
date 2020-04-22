@@ -35,17 +35,19 @@ public class Heuristic implements Scorer<Square> {
 	@Override
 	public ScorerResult computeCost(Square from, Square to, double currentExhaustionPoints) {
 		if (from.getTerrain().getCode() == 3) { // Wald
-			result.setCost(Math.hypot(from.getX() - to.getX(), from.getY() - to.getY())); // * multiplicator
+			result.setCost(Math.abs(from.getX() - to.getX()) + Math.abs(from.getY() - to.getY())); // * multiplicator
 			// - currentExhaustionPoints / 4.0);
 			// result.setExhaustionPoints(currentExhaustionPoints / 2.0);
 		} else if (from.getTerrain().getCode() == 5) { // Felswand
-			result.setCost(Math.hypot(from.getX() - to.getX(), from.getY() - to.getY()));// * multiplicator + 1.5);
+			result.setCost(Math.abs(from.getX() - to.getX()) + Math.abs(from.getY() - to.getY()));// * multiplicator +
+																									// 1.5);
 			// result.setExhaustionPoints(currentExhaustionPoints + 3);
 		} else if (from.getTerrain().getCode() == 1) { // Fluss
-			result.setCost(Math.hypot(from.getX() - to.getX(), from.getY() - to.getY()));// * multiplicator + 2);
+			result.setCost(Math.abs(from.getX() - to.getX()) + Math.abs(from.getY() - to.getY()));// * multiplicator +
+																									// 2);
 			// result.setExhaustionPoints(currentExhaustionPoints + 4);
 		} else {
-			result.setCost(Math.hypot(from.getX() - to.getX(), from.getY() - to.getY()));// * multiplicator);
+			result.setCost(Math.abs(from.getX() - to.getX()) + Math.abs(from.getY() - to.getY()));// * multiplicator);
 			// result.setExhaustionPoints(currentExhaustionPoints);
 		}
 
