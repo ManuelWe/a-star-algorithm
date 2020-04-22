@@ -81,10 +81,14 @@ public class RouteFinder<T extends GraphNode> {
 				RouteNode<T> nextNode = allNodes.getOrDefault(connection, new RouteNode<>(connection));
 				allNodes.put(connection, nextNode);
 
-				if (nextNode.getRouteScore() > newScore) {
+				scorerResult = targetScorer.computeCost(connection, to, next.getExhaustionPoints());
+
+				System.out.println(nextNode.getCurrent().getId() + " f:" + nextNode.getEstimatedScore() + " g:"
+						+ newScore + " h:" + scorerResult.getCost());
+				if (nextNode.getEstimatedScore() > newScore + scorerResult.getCost()) {
 					nextNode.setPrevious(next.getCurrent());
 					nextNode.setRouteScore(newScore);
-					scorerResult = targetScorer.computeCost(connection, to, next.getExhaustionPoints());
+
 //					currentExhaustionPoints = scorerResult.getExhaustionPoints();
 //					nextNode.setExhaustionPoints(currentExhaustionPoints);
 					nextNode.setEstimatedScore(newScore + scorerResult.getCost());
