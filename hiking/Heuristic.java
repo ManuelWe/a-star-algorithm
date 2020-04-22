@@ -8,9 +8,11 @@ import a_star.ScorerResult;
 // implementation of Scorer interface to calculate estimated cost to destination 
 public class Heuristic implements Scorer<Square> {
 	private ScorerResult result = new ScorerResult();
+	ArrayList<Terrain> terrains;
 	private double multiplicator;
 
 	public Heuristic(ArrayList<Terrain> terrains) {
+		this.terrains = terrains;
 		int lowestTerrainCost = Integer.MAX_VALUE;
 
 		// find lowest terrain cost
@@ -37,6 +39,11 @@ public class Heuristic implements Scorer<Square> {
 		if (from.getTerrain().getCode() == 3) { // Wald
 			result.setCost(Math.abs(from.getX() - to.getX()) + Math.abs(from.getY() - to.getY())); // * multiplicator
 			// - currentExhaustionPoints / 4.0);
+			if ((Math.abs(from.getX() - to.getX()) + Math.abs(from.getY() - to.getY()) + 1) * 4 >= 10 // TODO +1 ok?
+					- currentExhaustionPoints) {
+				result.setCost(result.getCost() - (5 - (terrains.get(3).getCost()
+						- Math.min(terrains.get(1).getCost(), terrains.get(5).getCost()))));
+			}
 			// result.setExhaustionPoints(currentExhaustionPoints / 2.0);
 		} else if (from.getTerrain().getCode() == 5) { // Felswand
 			result.setCost(Math.abs(from.getX() - to.getX()) + Math.abs(from.getY() - to.getY()));// * multiplicator +
