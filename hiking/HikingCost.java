@@ -21,9 +21,8 @@ public class HikingCost implements Scorer<Square> {
 			result.setExhaustionPoints(currentExhaustionPoints);
 		}
 
-		if (result.getExhaustionPoints() >= 10) {
-			result.setExhaustionPoints(result.getExhaustionPoints() - 10);
-			result.setCost(from.getTerrain().getCost() + 5);
+		if (result.getExhaustionPoints() >= 10) { // exhaustionPoints are subtracted by 10 in RouteFinder
+			result.setCost(from.getTerrain().getCost() + 5); // add break cost to cost to next node
 		}
 
 		return result;

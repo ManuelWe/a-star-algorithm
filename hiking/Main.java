@@ -1,5 +1,6 @@
 package hiking;
 
+import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,25 +11,25 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.swing.JFrame;
+
 import a_star.Graph;
 import a_star.RouteFinder;
-import a_star.RouteNode;
 
 public class Main {
-	private Graph<Square> hikingGraph;
-	private RouteFinder<Square> routeFinder;
+	public Graph<Square> hikingGraph;
+	public RouteFinder<Square> routeFinder;
 	private ArrayList<Terrain> terrains = new ArrayList<Terrain>();
 	private String[][] field;
 	private HikingCost hikingCost = new HikingCost();
 	private int startNodeId;
 	private int endNodeId;
 
-	public void parseCSV() {
-		String pathToCSV = "./VerfrühtesAbbiegenaufWaldForce1.csv";
+	// parse csv for field, terrain info and start and end node ids
+	public void parseCSV(String pathToCSV) {
 		File csvFile = new File(pathToCSV);
 
 		if (csvFile.isFile()) {
@@ -121,6 +122,7 @@ public class Main {
 		return Integer.toString(endNodeId);
 	}
 
+	// construct graph with nodes and connections from field
 	public void setUp() throws Exception {
 		Set<Square> squares = new HashSet<>();
 		Set<String> squareNeighbours = new HashSet<>();
@@ -153,10 +155,11 @@ public class Main {
 		}
 
 		hikingGraph = new Graph<>(squares, connections);
-		routeFinder = new RouteFinder<>(hikingGraph, hikingCost, new Heuristic(terrains));
+		routeFinder = new RouteFinder<>(hikingGraph, hikingCost, new Heuristic(terrains),
+				new WaldCheckImplementation(terrains));
 	}
 
-	public void printGraph(List<String> route, List<String> openSet) {
+	public void printGraph(List<String> route) {
 		String idString = null;
 		char ch = 'A';
 
@@ -174,8 +177,6 @@ public class Main {
 				} else {
 					if (route.contains(idString)) {
 						System.out.printf("%-4s", "X");
-//					} else if (openSet.contains(idString)) {
-//						System.out.printf("%-4s", "O");
 					} else {
 						System.out.printf("%-4s", hikingGraph.getNode(idString).getTerrain().getCode());
 					}
@@ -194,20 +195,9 @@ public class Main {
 		return cost;
 	}
 
-	public int computeTimeUnits(List<Square> route) {
-		int timeUnits = 0;
-		for (int i = 0; i < route.size(); i++) {
-			if (route.get(i).getTerrain().getCode() == 5)
-				timeUnits += 3;
-			if (route.get(i).getTerrain().getCode() == 1)
-				timeUnits += 4;
-		}
-		return timeUnits;
-	}
-
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.parseCSV();
+		main.parseCSV("./S_001_DatenTest.csv");
 		try {
 			main.setUp();
 		} catch (Exception e) {
@@ -218,16 +208,17 @@ public class Main {
 				main.hikingGraph.getNode(main.getEndNodeId()));
 		List<String> routeCompact = route.stream().map(Square::getId).collect(Collectors.toList());
 
-		List<String> openSetIds = new ArrayList<>();
-		Queue<RouteNode> openSet = main.routeFinder.getOpenSet();
-		while (!openSet.isEmpty()) {
-			openSetIds.add(openSet.poll().getCurrent().getId());
-		}
+		// draw graph
+		JFrame frame = new JFrame();
+		frame.setSize(main.field.length * 30 + 75, main.field[0].length * 30 + 90);
+		frame.getContentPane().add(new DrawGraph(routeCompact, main.hikingGraph, main.field));
+		frame.setLocationRelativeTo(null);
+		frame.setBackground(Color.LIGHT_GRAY);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
 
-		System.out.println(routeCompact);
-		main.printGraph(routeCompact, openSetIds);
-		System.out.println("Route cost (without breaks): " + main.computeRouteCost(route));
-		System.out.println("Exhaustion Points: " + main.computeTimeUnits(route));
-		System.out.println("Examined Nodes: " + main.routeFinder.nodesChecked);
+		main.printGraph(routeCompact);
+		System.out.println("\nRoute cost (without breaks): " + main.computeRouteCost(route));
+		System.out.println("Examined Nodes: " + main.routeFinder.getNodesChecked());
 	}
 }

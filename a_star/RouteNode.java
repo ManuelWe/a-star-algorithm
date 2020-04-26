@@ -6,8 +6,8 @@ import java.util.StringJoiner;
 public class RouteNode<T extends GraphNode> implements Comparable<RouteNode> { // TODO remove public
 	private final T current;
 	private T previous;
-	private double routeScore;
-	private double estimatedScore;
+	private double routeScore; // g score up to this node
+	private double estimatedScore; // f score up to this node
 	private double exhaustionPoints = 0; // exhaustionPoints up to this node
 	private boolean exhaustionBreak = false; // true if a break was taken on this route node
 
@@ -22,7 +22,7 @@ public class RouteNode<T extends GraphNode> implements Comparable<RouteNode> { /
 		this.estimatedScore = estimatedScore;
 	}
 
-	public T getCurrent() { // TODO remove public
+	T getCurrent() {
 		return current;
 	}
 
@@ -80,7 +80,7 @@ public class RouteNode<T extends GraphNode> implements Comparable<RouteNode> { /
 	@Override
 	public String toString() {
 		return new StringJoiner(", ", RouteNode.class.getSimpleName() + "[", "]").add("current=" + current)
-				.add("previous=" + previous).add("routeScore=" + routeScore).add("estimatedScore=" + estimatedScore)
+				.add("previous=" + previous).add("GScore=" + routeScore).add("estimatedScore=" + estimatedScore)
 				.toString();
 	}
 }

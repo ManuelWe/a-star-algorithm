@@ -4,6 +4,7 @@ import java.util.StringJoiner;
 
 import a_star.GraphNode;
 
+// implementation that represents a GraphNode for the hiking szenario 
 public class Square implements GraphNode {
 	private final String id;
 	private final int positionX;

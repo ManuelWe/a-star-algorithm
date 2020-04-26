@@ -1,5 +1,6 @@
 package hiking;
 
+// class to save terrain property belonging to a square
 public class Terrain {
 	private final int code;
 	private final String name;
