@@ -17,9 +17,9 @@ import hiking.Main;
 import hiking.Square;
 
 public class TestMaps {
-	private List<String> fileNames = new ArrayList<String>(Arrays.asList("CircleMap", "FelsFront", "MinReduceWald",
-			"VerfrühtesAbbiegenaufWald", "VerfrühtesAbbiegenaufWaldFail", "VerfrühtesAbbiegenaufWaldForce",
-			"WaldErholung", "WaldRealErholung", "WaldVsFels", "WaldVsFels2"));
+	private List<String> fileNames = new ArrayList<String>(
+			Arrays.asList("CircleMap", "FelsFront", "MinReduceWald", "VerfrühtesAbbiegenaufWald",
+					"VerfrühtesAbbiegenaufWaldForce", "WaldErholung", "WaldRealErholung", "WaldVsFels", "WaldVsFels2"));
 
 	private List<List<String>> correctPaths = new ArrayList<List<String>>(Arrays.asList(
 			new ArrayList<String>(
@@ -29,7 +29,6 @@ public class TestMaps {
 					"150", "165", "180", "195", "210")),
 			new ArrayList<String>(Arrays.asList("14", "29", "28", "27", "26")),
 			new ArrayList<String>(Arrays.asList("70", "69", "84", "99", "114")),
-			new ArrayList<String>(Arrays.asList("70", "85", "84", "99", "114")),
 			new ArrayList<String>(Arrays.asList("70", "85", "84", "99", "114")),
 			new ArrayList<String>(Arrays.asList("70", "69", "68", "67", "66", "65", "64")),
 			new ArrayList<String>(Arrays.asList("70", "69", "68", "67", "66", "65", "80")),
